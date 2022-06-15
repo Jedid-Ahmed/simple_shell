@@ -20,7 +20,6 @@ int c_atoi(char *s)
 	}
 	return (num);
 }
-
 /**
  * __exit - frees user input and then exits main program with a value
  * @str: user's command into shell (e.g. "exit 99")
