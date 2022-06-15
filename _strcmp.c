@@ -6,7 +6,6 @@
  * @s2: string 2
  * Return: int that tells num spaces in between, 0 if exactly the same string
  */
-
 int _strcmp(char *s1, char *s2)
 {
 	int i = 0;
