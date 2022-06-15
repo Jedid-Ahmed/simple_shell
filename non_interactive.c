@@ -52,6 +52,5 @@ void non_interactive(list_t *env)
 	}
 	free_double_ptr(n_line);
 	free_linked_list(env);
-	
 	exit(exit_stat);
 }
