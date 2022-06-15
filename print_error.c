@@ -94,4 +94,5 @@ void illegal_number(char *str, int c_n, list_t *env)
 		count++;
 	write(STDOUT_FILENO, str, count);
 	write(STDOUT_FILENO, "\n", 1);
+	
 }
