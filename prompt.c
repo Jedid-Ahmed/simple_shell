@@ -23,7 +23,7 @@ int built_in(char **token, list_t *env, int num, char **command)
 	int i = 0;
 
 	/* if user types "exit", free cmd tokens, and exit */
-	if (_strcmp(token[0], "exit") == 0)
+	if (_strcmp(token[0], "exitt") == 0)
 	{
 		i = __exit(token, env, num, command);
 	}
