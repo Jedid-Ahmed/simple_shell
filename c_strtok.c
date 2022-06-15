@@ -66,6 +66,5 @@ char **c_str_tok(char *str, char *delm)
 		si++;
 	}
 	toks[p] = NULL; /* set last array ptr to NULL */
-	
 	return (toks);
 }
