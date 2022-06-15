@@ -6,6 +6,7 @@
  * @src: string to append
  * Return: concatenated string
  */
+
 char *c_strcat(char *dest, char *src)
 {
 	int len = 0;
