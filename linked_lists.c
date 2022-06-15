@@ -123,5 +123,4 @@ void free_linked_list(list_t *list)
 		free(holder->var);
 		free(holder);
 	}
-
 }
