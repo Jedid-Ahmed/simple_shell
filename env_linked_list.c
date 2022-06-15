@@ -18,7 +18,6 @@ list_t *env_linked_list(char **env)
 	}
 	return (head);
 }
-
 /**
  * _env - prints environmental variables
  * @str: user's command into shell (i.e. "env")
