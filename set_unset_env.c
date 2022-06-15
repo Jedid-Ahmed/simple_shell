@@ -56,7 +56,6 @@ int _unsetenv(list_t **env, char **str)
 	}
 	return (0);
 }
-
 /**
  * _setenv - create or modify existing environmental variable in linked list
  * @env: linked list
