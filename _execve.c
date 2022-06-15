@@ -11,7 +11,6 @@ void c_exit(char **str, list_t *env)
 	free_linked_list(env);
 	_exit(0);
 }
-
 /**
  * _execve - execute command user typed into shell
  * @s: command user typed
