@@ -36,6 +36,5 @@ char *_which(char *str, list_t *env)
 		i++;
 	}
 	free_double_ptr(toks);
-	
 	return (str); /* return string if not found; won't pass execve */
 }
