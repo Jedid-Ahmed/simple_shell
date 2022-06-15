@@ -62,6 +62,5 @@ char *int_to_string(int number)
 		tens /= 10;
 	}
 	res[i] = '\0';
-	
 	return (res);
 }
