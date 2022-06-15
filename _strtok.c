@@ -105,6 +105,5 @@ char **_str_tok(char *str, char *delm)
 	}
 	p++;
 	toks[p] = NULL; /* set last array ptr to NULL */
-	
 	return (toks);
 }
