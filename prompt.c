@@ -102,7 +102,7 @@ int prompt(char **en)
 			write(STDOUT_FILENO, "$ ", 2);
 		else
 			non_interactive(env);
-		signal(SIGINT, ctrl_c); /* makes ctrl+c not work */
+		
 		command = NULL; i = 0; /* reset vars each time loop runs */
 		i = get_line(&command); /* read user's cmd in stdin */
 		ctrl_D(i, command, env); /* exits shell if ctrl-D */
