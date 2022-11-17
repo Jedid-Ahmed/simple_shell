@@ -1,22 +1,17 @@
 #include "shell.h"
-
 /**
- * _strcmp - compares two strings
+ * _strcmp - concatenates two strings
  *
- * @prmString1: char pointer
- * @prmString2: char pointer
+ * @s1: destination string
  *
- * Return: difference between ascii number
+ * @s2: source string
+ *
+ * Return: return a character
  */
-int _strcmp(char *prmString1, char *prmString2)
+int _strcmp(char *s1, char *s2)
 {
-	int length;
-
-	for (length = 0; prmString1[length] != '\0'; length++)
-	{
-		if (prmString1[length] - prmString2[length] != 0)
-			return (prmString1[length] - prmString2[length]);
-	}
-
-	return (0);
+int i = 0;
+while (*(s1 + i) && *(s2 + i) && (*(s1 + i) == *(s2 + i)))
+i++;
+return (s1[i] - s2[i]);
 }
