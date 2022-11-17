@@ -1,182 +1,101 @@
-.TH SHELLBY 1 "November 2018" "Holberton School" "0x15. C - Simple Shell"
+.TH SIMPLE_SHELL 1 "28 March 2018" "1.0" "custom man page"
 .SH NAME
-.B shellby\fR \- simple UNIX command interpreter
+.B Simple Shell
+- command language interpreter
 .SH SYNOPSIS
-.B shellby\fR [\fIfilename\fR]
+.B Simple Shell
 .SH DESCRIPTION
-.B Shellby\fR is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them.
-
-.B Invocation
-.in +2n
-\fBShellby\fR can be invoked both interactively and non-interactively.
-If \fBshellby\fR is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
-
-If \fBshellby\fR is invoked with standard input connected to a terminal (determined by \fIisatty(3)\fR), an \fIinteractive\fR shell is opened.
-When executing interactively, \fBshellby\fR displays the prompt \fI$ \fR when it is ready to read a command.
-
-Alternatively, if command line arguments are supplied upon invocation, \fBshellby\fR treats the first argument as a file from which to read commands.
-The supplied file should contain one command per line.
-.B Shellby\fR runs each of the commands contained in the file in order before exiting.
-.in
-
-.B Environment
-.in +2n
-Upon invocation, \fBshellby\fR receives and copies the environment of the parent process in which it was exeucted.
-This \fBenvironment\fR is an array of \fIname-value\fR strings describing variables in the format \fINAME=VALUE\fR.
-.in
-
-.B Command Execution
-.in +2n
-After receiving a command, \fBshellby\fR tokenizes it into words using \fB" "\fR as a delimiter.
-The first word is considered the command and all remaining words are considered arguments to that command.
-.B Shellby\fR then proceeds with the following actions:
-
+Simple shell is one version of a command language interpreter that executes commands read from the standard input. It's functionality is limited to certain shell builtin functions found in the environmental variable
+.I PATH.
+It does not yet handle piping, redirection, pattern matching, variable expansions, and more extra functions.
+.SS Invocation
+An
+.I interactive
+simple shell can be invoked by typing ./simple_shell. Meanwhile, a
+.I non-interactive
+simple shell can also be invoked via a pipe (e.g. echo "/bin/ls" | ./simple_shell).
+.SS Command Execution
+After a command has been split into words, if it results in a simple command and an optional list of arguments, the following actions are taken.
+.sp
+If the command name contains no slashes, the shell attempts to locate it. If there exists a shell function by that name that function is invoked. If the name does not match a function, the shell searches for it in the list of shell builtins. If a match is found, that builtin is invoked.
+.sp
+If the name is neither a shell function nor a builtin, and contains no slashes, the simple shell searches each element of the environmental variable PATH for a directory containing an executable file by that name. If the search is unsuccessful, the simple shell prints an error message "Error: File or description not found."
+.SS Sample Functions
+.sp
+echo
+.I [arguments]
+      prints to standard output the argument(s) given and prints a newline
+.sp
+ls
+.I [[flags]...[arguments]]
+      lists files in the current directory according to the flags given by user
+.sp
+pwd
+      prints working directories
+.sp
+whereis
+.I [command]
+      prints to standard output which directory the function or shell builtin can be found
+.SS Shell Builtin Commands
+.sp
+cd
+      changes directory and updates environmental variables OLDPWD and PWD
+.sp
+env
+      prints environmental variables
+.sp
+exit
+      exits out of simple shell and returns to user's original shell
+.sp
+setenv
+      creates non-existing or modifies existing environmental variable within shell session
+.sp
+unsetenv
+      removes existing environmental variable within shell session
+.SH EXAMPLE
+To
+.I invoke
+simple shell:
+.sp
 .RS
-1. If the first character of the command is neither a slash (\fI\\\fR) nor dot (\fI.\fR), the shell searches for it in the list of shell builtins.
-If there exists a shell builtin by that name, the builtin is invoked.
+(your_terminal)$ ./simple_shell
 .RE
-
 .RS
-2. If the first character of the command is none of a slash (\fI\\\fR), dot (\fI.\fR), nor builtin, \fBshellby\fR searches each element of the
-\fBPATH\fR environmental variable for a directory containing an executable file by that name.
+.I $
 .RE
-
+.sp
+Sample Usage:
+.sp
 .RS
-3. If the first character of the command is a slash (\fI\\\fR) or dot (\fI.\fR) or either of the above searches was successful,
-the shell executes the named program with any remaining arguments given in a separate execution environment.
+.I $
+echo "This is pretty cool!"
 .RE
-
-.B Exit Status
-.in +2n
-.B Shellby\fR returns the exit status of the last command executed, unless a syntax error occurs, with zero indicating success and non-zero indicating failure.
-
-If a command is not found, the return status is 127; if a command is found but is not executable, the return status is 126.
-
-All builtins return zero on success and one or two on incorrect usage (indicated by a corresponding error message).
-.in
-
-.B Signals
-.in +2n
-While running in interactive mode, \fBshellby\fR ignores the keyboard input \fBCtrl+c\fR.
-Alternatively, an input of end-of-file (\fBCtrl+d\fR) will exit the program.
-.in
-
-.B Variable Replacement
-.in +2n
-.B Shellby\fR inerprets the \fI$\fR character for variable replacement:
-
 .RS
-.B $ENV_VARIABLE\fR	\fIENV_VARIABLE\fR is subsituted with its value.
+.I This is pretty cool!
 .RE
-
 .RS
-.B $?\fR			\fI?\fR is substituted with the return value of the last program executed.
+.I $
+ls -l /tmp
 .RE
-
 .RS
-.B $$\FR			The second \fI$\fR is substituted with the current process ID.
+.I total 4
 .RE
-
-.B Comments
-.in +2n
-.B Shellby\fR ignores all words and characters preceeded by a \fI#\fR character on a line.
-.in
-
-.B Operators
-.in +2n
-
 .RS
-.B ;\fR - Command separator
+.I drwx------ 2 vagrant vagrant 4096 Mar 19 20:22 ssh-xTKqci
+.RE
+.sp
+To leave simple shell and return to your terminal:
+.sp
 .RS
-Commands separated by a \fI;\fR are executed sequentially.
+.I $
+exit
 .RE
-
-.B &&\fR - AND logical operator
 .RS
-.I command1\fR && \fIcommand2\fR: \fIcommand2\fR is executed if, and only if, \fIcommand1\fR returns an exit status of zero.
+(your_terminal)$
 .RE
-
-.B ||\fR - OR logical operator
-.RS
-.I command1\fR || \fIcommand2\fR: \fIcommand2\fR is executed if, and only if, \fIcommand1\fR returns a non-zero exit status.
-.RE
-
-The operators \fI&&\fR and \fI||\fR have equal precedence, followed by \fI;\fR.
-.RE
-
-.B Shellby Builtin Commands
-.in +2n
-
-.RS
-.B cd
-.RS
-Usage: .B cd [DIRECTORY]
-
-Changes the current directory of the process to \fBDIRECTORY\fR.
-
-If no argument is given, the command is interpreted as \fBcd $HOME\fR.
-
-If the argument \fB-\fR is given, the command is interpreted as \fBcd $OLDPWD\fR.
-
-The environment variables \fBPWD\fR and \fBOLDPWD\fR are updated after a change of directory.
-.RE
-
-.B alias
-.RS
-Usage: \fBalias [NAME[='VALUE'] ...]\fR
-
-Handles aliases.
-
-.I alias\fR: Prints a list of all aliases, one per line, in the form \fINAME='VALUE'\fR.
-
-.I alias NAME [NAME2 ...]\fR: Prints the aliases \fINAME\fR, \fINAME2\fR, etc. one per line, in the form \fINAME='VALUE'\fR.
-
-.I alias NAME='VALUE' [...]\fR: Defines an alias for each \fINAME\fR whose \fIVALUE\fR is given.
-If \fIname\fR is already an alias, its value is replaced with \fIVALUE\fR.
-.RE
-
-.B exit
-.RS
-Usage: \fBexit [STATUS]\fR
-
-Exits the shell.
-
-The \fBSTATUS\fR argument is the integer used to exit the shell.
-
-If no argument is given, the command is interpreted as \fBexit 0\fR.
-.RE
-
-.B env
-.RS
-Usage: \fBenv\fR
-
-Prints the current environment.
-.RE
-
-.B setenv
-.RS
-Usage: \fBsetenv [VARIABLE] [VALUE]\fR
-
-Initializes a new environment variable, or modifies an existing one.
-
-Upon failure, prints a message to \fBstderr\fR
-.RE
-
-.B unsetenv
-.RS
-Usage: \fBunsetenv [VARIABLE]\fR
-
-Removes an environmental variable.
-
-Upon failure, prints a message to \fBstderr\fR.
-.RE
-.RE
-.in
-
+.SH BUGS
+Bugs...
 .SH SEE ALSO
-access(2), chdir(2), execve(2), _exit(2), exit(3), fflush(3), fork(2), free(3), isatty(3), getcwd(3), malloc(3), open(2), read(2), sh(1), signal(2), stat(2), wait(2), write(2)
-
-.B Shellby\fR emulates basic functionality of the \fBsh\fR shell.
-This man page borrows from the corresponding man pages sh(1) and dash(1).
-.SH AUTHOR
-Alex Yu and Brennan D Baraban
+.I bash(1), sh(1), ksh(1), csh(1)
+.SH AUTHORS
+Kevin Yook and Melissa Ng
