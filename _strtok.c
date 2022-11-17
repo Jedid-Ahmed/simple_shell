@@ -1,83 +1,71 @@
 #include "shell.h"
-/**
- * count_words - counts separate words in string
- * @str: pointer to s
- * @delim: delimiter
- * Return: number of words
- */
-int count_words(char *str, char delim)
-{
-	int i, count;
 
-	i = 0;
-	count = 0;
-	while (str[i] != '\0')
+/* GLOBAL VAR TKN_PTR */
+static char *TKN_PTR = "";
+static int NO_INIT_TKN_PTR = 1;
+
+/* helper function prototype */
+int isdelimiter(char c, char *delimiter);
+
+/**
+ * _strtok - Divides a string into tokens
+ * @str: String to be divided
+ * @delimiter: Delimiter by which to str will be divided
+ *
+ * Return: Token in string
+*/
+char *_strtok(char *str, char *delimiter)
+{
+	char *curr_pos;
+	char *tkn_start = NULL;
+
+	if (NO_INIT_TKN_PTR == 1)
 	{
-		if (str[i] != delim && (str[i + 1] == delim || str[i + 1]  ==
-					'\t' || str[i + 1] == '\0'))
-			count++;
-		i++;
+		TKN_PTR = NULL;
+		NO_INIT_TKN_PTR = 0;
 	}
-	return (count);
-}
-/**
- * _wrdlen - returns the lenght of a word
- * @s: pointer to s
- * @delim: delimiter
- * Return: lenght
- */
-int _wrdlen(char *s, char delim)
-{
-	int c = 0; /* count  */
 
-	while (*(s + c) != delim && *(s + c) != '\0' && *(s + c) != '\t')
-		c++;
-	return (c);
-}
-/**
- * strtow - splits a string into words
- * @str: string to break
- * @delim: delimiter
- * Return: array of strings(words)
- */
-char **strtow(char *str, char delim)
-{
-	int i, j, k, h, c, len;
-	char **words;
+	if ((str == NULL && TKN_PTR == NULL) || (str != NULL && str[0] == '\0'))
+		return (NULL);
 
-	if (str == NULL || str[0] == '\0')
-		return (NULL);
-	c = count_words(str, delim);
-	if (c == 0)
-		return (NULL);
-	words = malloc(sizeof(char *) * (c + 1));
-	if (words == NULL)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (str[i] != '\0')
+	if (str != NULL)
+		TKN_PTR = str;
+
+	for (curr_pos = TKN_PTR; *curr_pos != '\0'; curr_pos++)
 	{
-		while ((str[i] == delim || str[i] == '\t') && str[i] != '\0')
-			i++;
-		if (str[i] == '\0')
+		if (!isdelimiter(*curr_pos, delimiter))
 		{
-			words[j] = NULL;
-			return (words);
+			tkn_start = curr_pos;
+			while (*curr_pos != '\0' && !isdelimiter(*curr_pos, delimiter))
+				curr_pos++;
+
+			TKN_PTR = curr_pos + 1;
+			if (*curr_pos == '\0')
+				TKN_PTR = curr_pos;
+			*curr_pos = '\0';
+
+			return (tkn_start);
 		}
-		words[j] = malloc(sizeof(char) * (_wrdlen(str + i, delim) + 1));
-		if (words[j] == NULL)
-		{
-			for (k = j - 1; k >= 0; k--)
-				free(words[k]);
-			free(words);
-			return (NULL);
-		}
-		len = _wrdlen(str + i, delim);
-		for (h = 0; h < len && str[i] != '\0'; h++, i++)
-			words[j][h] = str[i];
-		words[j][h] = '\0';
-		j++;
 	}
-	words[j] = NULL;
-	return (words);
+
+	return (NULL);
+}
+
+/**
+ * isdelimiter - Evaluates if a char is a delimiter or not
+ * @c: Char to evaluate
+ * @delimiter: Set of chars as delimiters
+ *
+ * Return: 1 if c is a delimiter, 0 otherwise
+*/
+int isdelimiter(char c, char *delimiter)
+{
+	while (*delimiter != '\0')
+	{
+		if (c == *delimiter)
+			return (1);
+		delimiter++;
+	}
+
+	return (0);
 }
