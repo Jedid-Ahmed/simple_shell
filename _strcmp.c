@@ -1,21 +1,22 @@
 #include "shell.h"
 
 /**
- * _strcmp - compare two strings
- * @s1: string 1
- * @s2: string 2
- * Return: int that tells num spaces in between, 0 if exactly the same string
+ * _strcmp - compares two strings
+ *
+ * @prmString1: char pointer
+ * @prmString2: char pointer
+ *
+ * Return: difference between ascii number
  */
-
-int _strcmp(char *s1, char *s2)
+int _strcmp(char *prmString1, char *prmString2)
 {
-	int i = 0;
+	int length;
 
-	while (*(s1 + i) == *(s2 + i) && *(s1 + i))
-		i++;
+	for (length = 0; prmString1[length] != '\0'; length++)
+	{
+		if (prmString1[length] - prmString2[length] != 0)
+			return (prmString1[length] - prmString2[length]);
+	}
 
-	if (*(s2 + i))
-		return (*(s1 + i) - *(s2 + i));
-	else
-		return (0);
+	return (0);
 }

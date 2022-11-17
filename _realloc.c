@@ -1,44 +1,35 @@
 #include "shell.h"
 
 /**
- * _realloc - allocate memory and set all values to 0
- * @ptr: pointer to the memory previously allocated (malloc(old_size))
- * @old_size: size previously allocated
- * @new_size: new size to reallocate
- * Return: pointer to reallocated memory
+ * _realloc - reallocates a memory block using malloc and free
+ *
+ * @prmPtr: source pointer
+ * @prmOldSize: in pointer size
+ * @prmNewSize: out pointer size
+ *
+ * Return: reallocated pointer
  */
-
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+void *_realloc(void *prmPtr, unsigned int prmOldSize, unsigned int prmNewSize)
 {
-	void *p;
-	unsigned int i;
+	void *s = prmPtr;
 
-	if (new_size == 0 && ptr != NULL) /* free memory if reallocate 0 */
+	if (prmPtr == NULL)
+		return (malloc(prmNewSize));
+	if (prmNewSize == prmOldSize)
+		return (prmPtr);
+	if (prmNewSize == 0)
 	{
-		free(ptr);
+		free(prmPtr);
 		return (NULL);
 	}
 
-	if (new_size == old_size) /* return ptr if reallocating same old size */
-		return (ptr);
+	s = malloc(prmNewSize);
 
-	if (ptr == NULL) /* malloc new size if ptr is originally null */
-	{
-		p = malloc(new_size);
-		if (p == NULL)
-			return (NULL);
-		else
-			return (p);
-	}
-
-	p = malloc(new_size); /* malloc and check error */
-	if (p == NULL)
+	if (s == NULL)
 		return (NULL);
 
-	/* fill up values up till minimum of old or new size */
-	for (i = 0; i < old_size && i < new_size; i++)
-		*((char *)p + i) = *((char *)ptr + i);
-	free(ptr); /* free old ptr */
+	s = _memcpy(s, prmPtr, prmOldSize);
+	free(prmPtr);
 
-	return (p);
+	return (s);
 }

@@ -1,18 +1,59 @@
 #include "shell.h"
 
-/**
- * main - creates a simple shell
- * @ac: argument count
- * @av: argument vectors
- * @env: environmental variables
- * Return: 0 on success
- */
-int main(int ac, char **av, char **env)
+int main(int argc __attribute__((unused)), char **argv)
 {
-	(void)ac;
-	(void)av;
+	appData_t *appData = NULL;
+	int cLoop;
+	void (*func)(appData_t *);
 
-	prompt(env);
+	appData = _initData(argv);
 
-	return (0);
+	do {
+		signal(SIGINT, _ctrlC);
+		_prompt();
+
+		_getline(appData);
+
+		appData->history = _strtow(appData->buffer, COMMAND_SEPARATOR, ESCAPE_SEPARATOR);
+
+		if (appData->history == NULL)
+		{
+			_freeAppData(appData);
+			free(appData);
+			continue;
+		}
+
+		for (cLoop = 0; appData->history[cLoop] != NULL; cLoop++)
+		{
+			appData->arguments = _strtow(appData->history[cLoop], SEPARATORS, ESCAPE_SEPARATOR);
+
+			if (appData->arguments == NULL)
+			{
+				_freeAppData(appData);
+				_freeEnvList(appData->env);
+				appData->env = NULL;
+				free(appData);
+				appData = NULL;
+				break;
+			}
+
+			appData->commandName = _strdup(appData->arguments[0]);
+
+			if (appData->commandName != NULL)
+			{
+				func = _getCustomFunction(appData->commandName);
+				if (func != NULL)
+					func(appData);
+				else
+					_execCommand(appData);
+			}
+			_freeCharDoublePointer(appData->arguments);
+			appData->arguments = NULL;
+			free(appData->commandName);
+			appData->commandName = NULL;
+		}
+
+		_freeAppData(appData);
+	} while (1);
+	return (EXIT_SUCCESS);
 }

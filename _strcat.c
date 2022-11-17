@@ -1,40 +1,24 @@
 #include "shell.h"
 
 /**
- * _strcat - concatenate two strings
- * @dest: string to be appended to
- * @src: string to append
- * Return: concatenated string
+ * _strcat - concatenates two string
+ *
+ * @prmDest: char pointer
+ * @prmSrc: char pointer
+ *
+ * Return: string
  */
-char *_strcat(char *dest, char *src)
+char *_strcat(char *prmDest, char *prmSrc)
 {
-	int len = 0;
-	int len2 = 0;
-	int total_len = 0;
-	int j = 0;
+	int length, d_size, s_size;
 
-	/* find total length of both strings to _realloc */
-	while (dest[len] != '\0')
+	d_size = _strlen(prmDest);
+	s_size = _strlen(prmSrc);
+
+	for (length = 0; length < s_size; length++)
 	{
-		len++;
-		total_len++;
-	}
-	while (src[len2] != '\0')
-	{
-		len2++;
-		total_len++;
+		prmDest[d_size + length] = prmSrc[length];
 	}
 
-	/* _realloc because dest was malloced outside of function */
-	dest = _realloc(dest, len, sizeof(char) * total_len + 1);
-
-	while (src[j] != '\0')
-	{
-		dest[len] = src[j];
-		len++;
-		j++;
-	}
-	dest[len] = '\0';
-
-	return (dest);
+	return (prmDest);
 }
